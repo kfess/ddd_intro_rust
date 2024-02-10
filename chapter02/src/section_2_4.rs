@@ -24,7 +24,7 @@ impl Money {
                 currency: self.currency.clone(),
             })
         } else {
-            Err(anyhow::Error::msg("通貨が異なるため、計算できません。"))
+            Err(Error::msg("通貨が異なるため、計算できません。"))
         }
     }
 
