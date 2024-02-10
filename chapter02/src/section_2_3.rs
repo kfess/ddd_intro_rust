@@ -4,8 +4,13 @@
 #![allow(dead_code)]
 
 use anyhow::{bail, Result};
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::str::FromStr;
+
+lazy_static! {
+    static ref NAME_REGEX: Regex = Regex::new(r"^[a-zA-Z]+$").unwrap();
+}
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 struct Name {
@@ -16,8 +21,7 @@ impl FromStr for Name {
     type Err = anyhow::Error;
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^[a-zA-Z]+$").unwrap();
-        if re.is_match(&value) {
+        if NAME_REGEX.is_match(&value) {
             Ok(Name {
                 value: value.to_string(),
             })
@@ -34,15 +38,19 @@ struct FullName {
 }
 
 impl FullName {
-    fn new(first_name: &str, last_name: &str) -> Self {
-        FullName {
-            first_name: Name {
-                value: first_name.to_string(),
-            },
-            last_name: Name {
-                value: last_name.to_string(),
-            },
-        }
+    fn new(first_name: &str, last_name: &str) -> Result<Self, anyhow::Error> {
+        Ok(FullName {
+            first_name: first_name.parse()?,
+            last_name: last_name.parse()?,
+        })
+    }
+
+    fn first_name(&self) -> &str {
+        &self.first_name.value
+    }
+
+    fn last_name(&self) -> &str {
+        &self.last_name.value
     }
 }
 
@@ -56,18 +64,20 @@ mod tests {
         assert_eq!(valid_first_name.is_err(), false);
     }
 
+    #[test]
     fn is_invalid_name() {
         let invalid_first_name = "John123".parse::<Name>();
         assert_eq!(invalid_first_name.is_err(), true);
     }
 
+    #[test]
     fn is_empty_name() {
         let empty_name = "".parse::<Name>();
         assert_eq!(empty_name.is_err(), true);
     }
 
+    #[test]
     fn generate_full_name() {
-        let full_name = FullName::new("John", "Smith");
-        println!("{:?}", full_name);
+        assert!(FullName::new("John123", "Smith123").is_err());
     }
 }
