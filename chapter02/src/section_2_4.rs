@@ -54,6 +54,7 @@ mod tests {
         assert_eq!(sum.unwrap().amount, 3000);
     }
 
+    #[test]
     fn minus_two_money() {
         let money_1 = Money::new(2000, "JPY");
         let money_2 = Money::new(1000, "JPY");
@@ -62,6 +63,7 @@ mod tests {
         assert_eq!(sum.unwrap().amount, 1000);
     }
 
+    #[test]
     fn different_currencies() {
         let money_1 = Money::new(1000, "JPY");
         let money_2 = Money::new(2000, "USD");
