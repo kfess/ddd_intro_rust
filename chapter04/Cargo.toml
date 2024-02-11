@@ -1,0 +1,8 @@
+[package]
+name = "chapter04_domain_service"
+version = "0.1.0"
+authors = ["kfess"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0.79"
